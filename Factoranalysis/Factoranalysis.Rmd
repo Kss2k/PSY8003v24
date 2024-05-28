@@ -1,0 +1,414 @@
+---
+title: "Factoranalysis" 
+output:
+rmdformats::downcute:
+    downcute_theme: "chaos"
+---
+
+# Factor- and Principal Components Analysis
+
+# Section 1: Factor Analysis
+
+## Dataset and Packages
+
+**R**
+
+**Packages**
+
+```{r}
+library(tidyverse)
+library(psych)
+library(pprint)
+library(Statamarkdown)
+
+# NEW PACKAGES
+# install.packages("psych")
+# install.packages("GPArotation")
+library(psych)
+# We dont need to load GPArotation, but the psych package needs it for certain rotations
+```
+
+**STATA**
+
+```{stata}
+findit fapara
+ssc install sumscale
+```
+
+**Working Directory and Dataset**
+
+```{r}
+setwd("C:/Users/slupp/OneDrive/Skrivebord/NTNU/Mehmet/PSY8003/Factoranalysis")
+workout <- readRDS("workout3.rds")
+
+```
+
+**STATA**
+
+```{stata}
+cd "C:\Users\slupp\OneDrive\Skrivebord\NTNU\Mehmet\PSY8003\Factoranalysis"
+use workout3.dta
+```
+
+## Selecting the Right Number of Factors
+
+1.  Before we can extract our factors, we need to determine the right number of factors.
+2.  There are many ways of determining the number of factors to extract:
+    1.  Kaisers criterion (or other eigenvalue thresholds)
+    2.  Screeplot
+    3.  Theoretical sensitivity
+    4.  Good structure?
+    5.  Parsimony and good fit
+    6.  Parallel analysis
+    7.  etc
+3.  We're going to assess these throughout (since factoranalysis is a circular process) as each fits in to our position in the process
+
+#### Parallel Analysis
+
+1.  We will start with parallel analysis
+2.  Parallel Analysis is in general considered one of the best methods of determining the number of factors to extract
+3.  In Parallel Analysis we simulate random datasets which are similar in number of particpants and variables to our own
+4.  For a factor *j* to be retained we wish it to have an eigenvalue above the average of eigenvalue for factor *j,* from our randomly generated datasets.
+    1.  Factors are ordered from high to low eigenvalues, so we must compare them in order
+5.  Some have suggested using more stringent criteria, like top 95% percentile (i.e., roughly + 2 std.dev)
+
+**R**
+
+First we should remove all NA's from our dataset, as most functions from the psych package assume no missing values
+
+```{r}
+complete_workout <- na.omit(workout) # Case/row-wise deletion
+```
+
+And before we do anything else, it is allways a good idea to take a look at our dataset
+
+```{r}
+psummary(complete_workout)
+```
+
+```{stata}
+summarize
+```
+
+```{r}
+library(psych)
+
+parallel_analysis <- fa.parallel(complete_workout,
+                                 fm = "pa", # Principal axis factor solution
+                                 fa = "fa", # Eigenvalues from principal axis
+                                 SMC = "TRUE" # Squared Multiple Correlation (i.e., R2) used as an initial estimate of communalities in the diagonal of the correlation matrix
+                                 )
+
+print(parallel_analysis)
+```
+
+**STATA**
+
+Using the fapara package and .fapara command. We must first however run a factor analysis
+
+```{stata}
+factor _all 
+fapara, reps(25)
+```
+
+![](images/Skjermbilde%202023-06-15%20100053.png){width="611"}
+
+#### Average Squared Multiple Correlation
+
+1.  Another measure is comparing a factors SMC (i.e., initial communalities in the diagonal) too the average of all factors SMC
+2.  This means that the (unrotated) factor explains more variance than the average variable (when attempting to remove measurement error, i.e., unique variance)
+3.  This is basically the same as using Kaisers criterion for PCA where the initial communalities are 1, and hence we want factors which have eigenvalues above 1
+
+**R**
+
+```{r}
+mean_smc <- smc(complete_workout) |> mean()
+mean_smc
+
+factor_model <- fa(complete_workout, nfactors = 2, fm = "pa", rotate = "varimax")
+
+
+diff.smc <- factor_model$values - mean_smc
+diff.smc
+
+```
+
+**STATA**
+
+This is not the most elegant solution, but it is the simplest (in terms of getting the average SMC)
+
+```{stata}
+factor _all
+estat smc
+
+display (0.7020 + 0.79 + 0.7098 + 0.6125 + 0.7872 + 0.7465 )/6
+```
+
+1.  Interestingly we can see that this suggests 3 (almost 4) instead of 2 factors
+
+**Interpretation**
+
+1.  Based on the results from parallel analysis, and theoretical sensitivity it seems that a two-factor solution is appropriate
+2.  We can then go over to estimating our model
+
+### Extracting Solution
+
+**R**
+
+1.  We continue to use the psych package, and use the fa-function
+
+```{r}
+factor_model <- fa(complete_workout, nfactors = 2, fm = "pa", rotate = "varimax")
+factor_model
+psummary(factor_model, threshold = 0.2)
+```
+
+```{stata}
+factor _all
+```
+
+```{stata}
+quietly factor _all
+rotate , varimax blank(0.4)
+```
+
+There are some slight differences in the results we get from STATA and R, due to differences in certain parameters used when creating their functions. For example the promax rotation in STATA has a different default power-setting (which can be changed) but the psych package has a different one (which is difficult to change)
+
+### Changing Rotation
+
+We can also change the rotation to an oblique one
+
+```{r}
+factor_model <- fa(complete_workout, nfactors = 2, 
+                   fm = "pa", rotate = "promax")
+
+psummary(factor_model, threshold = 0)
+```
+
+```{stata}
+quietly factor _all
+rotate, oblique promax blank(0.4)
+```
+
+### Creating Our Factors: Using Generated Scores (unweighted)
+
+**R**
+
+We can use the score.items function from psych, which either finds a particpans sum of a set of variables, or a participants mean of a set of variables
+
+```{r}
+# naming our factors
+item_list <- list(relaxation = c("Var1", "Var2", "Var3"),
+                  appearance = c("Var4", "Var5", "Var6"))
+
+mean_factor_scores <- scoreItems(item_list, complete_workout, 
+                                 min = 1, # These arent really necessary
+                                 max = 6, # These arent really necessary
+                                 totals = FALSE)
+
+workout_with_factors <- cbind(complete_workout, mean_factor_scores$scores)
+psummary(workout_with_factors)
+```
+
+Alternatively we can do it our self using mutate
+
+```{r}
+workout_with_factors <- workout_with_factors %>% 
+  mutate(relaxation_2 = (Var1 + Var2 + Var3)/3,
+         appearance_2 = (Var4 + Var5 + Var6)/3)
+psummary(workout_with_factors)
+```
+
+Here we can see that we get the same results
+
+**STATA**
+
+NB: we get slightly different results since we haven't removed NA's in STATA
+
+NB: This is a command from the package we installed earlier
+
+```{stata}
+sumscale, f1(Var1 Var2 Var3) f2(Var4 Var5 Var6)
+```
+
+### Creating our factors: using estimated scores (i.e., weighted scores)
+
+**R**
+
+Estimated scores are generated by our fa-function, which we can access through our fa-object
+
+```{r}
+factor_scores <- as.data.frame(factor_model$scores)
+
+workout_with_factors <- workout_with_factors %>%
+  mutate(relaxation_3 = factor_scores$PA1,
+         appearance_3 = factor_scores$PA2)
+psummary(workout_with_factors)
+```
+
+**STATA**
+
+We can use the postestimation command predict, and either use the regression or bartlett argument
+
+```{stata}
+quietly factor _all
+quietly rotate, oblique promax
+predict relaxation appearance , regression
+sum
+
+```
+
+## Exercises
+
+1.  Perform a factoranalysis (principal factor) on the workout dataset (not workout3, it is the dataset we used for mediation analysis).
+2.  Determine the appropriate number of factors using SMC's, Parallel Analysis, and theoretical sensitivity (You may also exclude variables if you think it is appropriate)
+3.  Determine whether to use an oblique or orthogonal rotation.
+4.  Interpret your results, and create variables representing your factors (either estimated or generated)
+
+```{r}
+workout2 <- readRDS("workout.rds")
+
+workout2 <- select(workout2, !age)
+
+workout2 <- na.omit(workout2)
+
+factor_model2 <- fa(workout2, nfactors = 2, fm = "pa",
+                    )
+psummary(factor_model2)
+```
+
+# Section 2: Principal Components Analysis
+
+We will now go through the same steps, only using PCA instead of PF
+
+#### Parallel Analysis
+
+```{r}
+#library(psych)  
+parallel_analysis <- fa.parallel(complete_workout,
+                                 fm = "pa",
+                                 fa = "pc")
+
+```
+
+**STATA**
+
+```{stata}
+quietly factor _all, pcf 
+fapara, pca reps(25)
+```
+
+![](images/Skjermbilde%202023-06-15%20152349.png){width="633"}
+
+#### Kaisers Criterion
+
+1.  Since we're using PCA and assume no measurement error, we can use Kaisers criterion instead of SMC (we could also use SMC)
+2.  The easiest way of evaluating this is simply by extracting an initial solution
+
+**R**
+
+1.  We continue to use the psych package, and use t
+
+```{r}
+pca_model <- principal(complete_workout, nfactors = 2, rotate = "varimax")  
+psummary(pca_model, threshold = 0.4)
+```
+
+```{stata}
+factor _all, pcf
+
+```
+
+Here we can see that only factor 1 and 2 have an eigenvalue \> 1
+
+### Oblique Rotation
+
+We can also change the rotation to an oblique one
+
+```{r}
+pca_model <- principal(complete_workout, nfactors = 2, rotate = "promax")
+                
+psummary(pca_model, threshold = 0.4)
+```
+
+```{stata}
+quietly factor _all, pcf
+rotate, oblique promax blank(0.4)
+```
+
+### Creating Our Factors: Using Generated Scores (unweighted)
+
+**R**
+
+This is exactly the same as with Principal Factor
+
+```{r}
+# naming our factors 
+
+item_list <- list(relaxation = c("Var1", "Var2", "Var3"),
+                  appearance = c("Var4", "Var5", "Var6"))  
+
+mean_component_scores <- scoreItems(item_list, complete_workout, 
+                                    min = 1, max = 6, 
+                                    totals = FALSE) 
+
+workout_with_components <- cbind(complete_workout, mean_component_scores$scores) 
+
+```
+
+OR
+
+```{r}
+workout_with_components <- mutate(workout_with_components, 
+                                  relaxation2 = (Var1 + Var2 + Var3)/3,
+                                  appearance2 = (Var4 + Var5 + Var6)/3)
+
+psummary(workout_with_components)
+```
+
+Here we can see that we get the same results
+
+**STATA**
+
+```{stata}
+sumscale, f1(Var1 Var2 Var3) f2(Var4 Var5 Var6)
+```
+
+### Creating our factors: using estimated scores (i.e., weighted scores)
+
+This is again the same
+
+**R**
+
+Estimated scores are generated by our fa-function, which we can access through our pca-object
+
+```{r}
+component_scores <- as.data.frame(pca_model$scores)
+
+workout_with_components <- workout_with_components %>% 
+  mutate(relaxation3 = component_scores$RC1,
+         appearance3 = component_scores$RC2)
+
+psummary(workout_with_components)
+```
+
+**STATA**
+
+We can use the postestimation command predict, and either use the regression or bartlett argument
+
+```{stata}
+quietly factor _all, pcf
+quietly rotate, oblique promax 
+predict relaxation appearance , regression 
+sum 
+```
+
+## Exercises
+
+1.  Perform a PCA on the workout dataset (not workout3, it is the dataset we used for mediation analysis).
+
+2.  Determine the appropriate number of factors using Kaisers criterion, Parallel Analysis, and theoretical sensitivity (You may also exclude variables if you think it is appropriate)
+
+3.  Determine whether to use an oblique or orthogonal rotation.
+
+4.  Interpret your results, and create variables representing your factors (either estimated or generated)

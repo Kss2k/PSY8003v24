@@ -1,0 +1,669 @@
+---
+title: "Logistic Regression"
+output: html_notebook
+---
+
+# Section 1: Simple Logistic Regression
+
+## Loading Dataset and Libraries
+
+```{r}
+library(tidyverse)
+library(Statamarkdown)
+
+# pprint has been updated
+# devtools::install_github("Kss2k/pprint")
+library(pprint)
+
+# New Packages
+  # new_packages <- c("DescTools", "visreg", "lmtest")
+  # install.packages(new_packages)
+library(visreg)
+library(lmtest)
+library(DescTools)
+```
+
+**R**
+
+```{r}
+setwd("C:/Users/slupp/OneDrive/Skrivebord/NTNU/Mehmet/PSY8003/Logistic_regression")
+titanic <- readRDS("titanic.rds")
+psummary(titanic)
+```
+
+**STATA**
+
+```{stata}
+cd "C:\Users\slupp\OneDrive\Skrivebord\NTNU\Mehmet\PSY8003\Logistic_regression"
+use titanic.dta
+
+
+```
+
+## Quick Recap
+
+1.  Logistic Regression is used when we have categorical dependent variables
+2.  Here we can no longer use a normal regression; since it is not bound between (0,1) and it should not be linear; rather sigmoidal (representing probability).
+3.  We transform the lefthand side of the equation to the log of the odds.
+4.  The log(odds) (i.e., logit) scales linearly, so it can be expressed in terms of our general(ized) linear equation.
+5.  Common misconceptions:
+    1.  We do not transform our dependent variable to log-odds
+    2.  We do not transform our independent variable to log-odds
+    3.  We do not change the general linear equation (B0 + B1X1 + BkXk)
+    4.  Rather we change the left hand side, so that we no longer predict our observed variable, but rather a probability of our observed variable.
+    5.  This makes it so we no longer can use OLS, but instead maximum likelyhood
+6.  Logisitc regression is most often used with dichotomous variables, but can also be used with categorical variables with more than two categories
+
+## Example 1: Simple Logistic Regression
+
+1.  Lets say we want to assess whether age predicts survival at the titanic
+2.  Put dependent variable is Survived (0 = died, 1 = survived)
+3.  Our independent variable is age:
+4.  For this we have to use the glm function in R
+    1.  GLM stands for generalized linear model, which allows for the use of different distributions of our Y-variable, than just the normal-distribution
+5.  In STATA we use the *logit* command, which basically has the same syntax as the regress command
+
+**R**
+
+Here we look at the effect of Age (NB i created a variable for this example (Age2) which has a very strong effect, so as to make the non-linearity more obvious). on Survival
+
+```{r}
+reg_survived_age <- glm(Survived ~ Age2, 
+                        family = binomial(link = "logit"),
+                        data = titanic)
+
+reg_survived_age <- glm(Survived ~ Age2, 
+                        family = binomial(link = "logit"), 
+                        data = titanic)
+summary(reg_survived_age)
+psummary(reg_survived_age)
+```
+
+**R: Significance Test**
+
+```{r}
+# library(lmtest)
+lrtest(reg_survived_age)
+```
+
+**R: Goodness of fit**
+
+```{r}
+#library(DescTools)
+PseudoR2(reg_survived_age, which = "McFadden" # Sane as in STATA and pprint
+         )
+```
+
+**pprint**
+
+Or you could just use the pprint function psummary()
+
+```{r}
+psummary(reg_survived_age)
+```
+
+**STATA**
+
+```{stata}
+logit Survived Age2
+```
+
+**Someone who wants to interpret?**
+
+```{r}
+cat(interpretation_1)
+```
+
+### Converting to Probabilities
+
+1.  In general it is difficult to interpret logits, and we usually want to use different (more intuitive) measures.
+2.  One measure is probabilites
+3.  Change i probability depends on where you are on the x-axis (i.e., the change is not linear), so we need to specify what points to compare
+
+```{r}
+coefficents_model <- coefficients(reg_survived_age)
+coefficents_model
+
+plogis(coefficents_model) |> format(scientific = F)
+```
+
+1.  This is a bit tricky to interpret, but the intercept represents the probability of surviving for a newborn.
+2.  While Age2 represents the probability of surviving for a one-year old; IF the probability of survival was .5 for a newborn.
+3.  This is not very useful, so we could instead use the mean as the reference.
+4.  Here we just use the logit coefficients and predict logitvalues for age 10 and 20
+5.  Then we compute the difference in logit, and use the plogis function to compute the difference between the two
+
+```{r}
+prob_10 <- plogis(coefficents_model[ "(Intercept)"] + 10*coefficents_model["Age2"])
+
+prob_20 <- plogis(coefficents_model[ "(Intercept)"] + 20*coefficents_model["Age2"])
+
+prob_10 |> round(3)
+prob_20 |> round(3)
+
+(prob_20 - prob_10) |> round(3)
+```
+
+1.  Here we can see that a 20 year old has 26% higher (absolute) probability of survival, compared to a 0 year old.
+2.  Since this is a sigmoid function we expect a different difference between 20 and 30 year olds
+
+```{r}
+prob_20 <- plogis(coefficents_model[ "(Intercept)"] + 20*coefficents_model["Age2"])
+
+prob_30 <- plogis(coefficents_model[ "(Intercept)"] + 30*coefficents_model["Age2"])
+
+prob_20 |> round(3)
+prob_30 |> round(3)
+
+(prob_30 - prob_20) |> round(3)
+```
+
+1.  Here we can see that we go from 26% to almost 100% likelihood of survival; a larger change (74%)
+2.  A more direct way can be done using the predict function
+3.  Remember that this is an artificial variable created for demonstrative purposes
+
+```{r}
+values_to_predict <- data.frame(Age2 = 1:40)
+                                
+
+predict(reg_survived_age, newdata =values_to_predict) |> plogis() |> round(5)
+```
+
+we can do the same in STATA using the margins command
+
+```{stata}
+quietly logit Survived Age2
+margins , at(Age2 = (0(5)40))
+```
+
+We can use these predictions, to visualize our model.
+
+```{r}
+values_to_predict <- data.frame(Age2 = c(seq(0,
+                                             40,
+                                             1)
+                                         )
+                                )
+
+values_to_predict = mutate(values_to_predict, predicted = predict(reg_survived_age, newdata =values_to_predict) |> plogis() |> round(5))
+
+values_to_predict %>% ggplot(aes(x = Age2, 
+                                 y = predicted)) +
+  geom_point() + 
+  geom_smooth(method = "glm", method.args = list(family = binomial), se = F )
+  
+```
+
+Here the points represent our predicted values for x = 1, 2 ... 40
+
+**Using the actual datapoints:**
+
+```{r}
+titanic %>% ggplot(aes(Age2, Survived)) +
+  geom_point() +
+  geom_smooth(method = "glm", formula = y ~x, method.args = list(family = binomial), se = F) 
+  
+```
+
+**Simple Version:**
+
+We can also visualize our model using the visreg package, which is a bit simpler.
+
+```{r}
+# Y = logit
+visreg(reg_survived_age)
+
+# Y = Survived/probability
+visreg(reg_survived_age, scale = "response")
+
+```
+
+```{stata}
+
+quietly logit Survived Age2
+margins , at(Age2 = (0(0.2)40)) 
+
+//Without CI (noci) and points (msize) 
+marginsplot, noci plotopts(msize(0) lwidth(0.6))
+
+
+```
+
+### ![](images/Skjermbilde%202023-06-14%20130755.png){width="642"}
+
+### Change in oddsratio
+
+Instead of expressing changes in probability, we can also express them as changes in odds ratios. OR can be interpreted similarily to logodds, where they represent the relative change (not absolute) in OR per unit increase in X
+
+To find OR in R we can simply use the exp()
+
+```{r}
+exp(coefficents_model)
+```
+
+This means that for each one step increase in X, the OR increases by 3.28 times the previous step.
+
+We can also use psummary()
+
+```{r}
+psummary(reg_survived_age, odds_ratio = TRUE)
+```
+
+**STATA**
+
+In STATA we can simply use the logistic function, instead of logit.
+
+```{stata}
+logistic Survived Age2
+```
+
+1.  As with probability we can predict different OR at different ages
+2.  But, if you bother to do this, you might as well use probabilities, as they are more intuitive to interpret
+
+```{r}
+OR_10 <- exp(coefficents_model[ "(Intercept)"] + 10*coefficents_model["Age2"])
+
+OR_20 <- exp(coefficents_model[ "(Intercept)"] + 20*coefficents_model["Age2"])
+
+OR_10
+OR_20
+OR_20 - OR_10
+```
+
+```{r}
+OR_20 <- exp(coefficents_model[ "(Intercept)"] + 20*coefficents_model["Age2"])
+
+OR_30 <- exp(coefficents_model[ "(Intercept)"] + 30*coefficents_model["Age2"])
+
+
+OR_30 - OR_20
+```
+
+1.  In general this is a bit tricky to interpret, since the change in OR increases exponentially per unit increase in X.
+2.  Although we can see that we get the same probability plot by using our ODDS-ratio coefficients, instead of Log(odds) coefficients, we can also that the absolute change in OR increases exponentially
+
+**Calculating probability using OR-coefficients (just to demonstrate)**
+
+```{r}
+# Function for calculating odds ratio for level in X
+odds_ratio_function <- function(x) {
+  initial_odds <- exp(coefficents_model[ "(Intercept)"])
+  coeff <- exp(coefficents_model["Age2"])
+  initial_odds*coeff^x
+}
+
+# Function for calculating probability based on odds 
+odds_to_probability <- function(x) {
+  odds_ratio <- odds_ratio_function(x)
+  odds_ratio/(odds_ratio + 1)
+}
+```
+
+```{r}
+
+  
+plot_prob <- data.frame(x = 1:40,
+                      y = odds_to_probability(1:40))
+
+ggplot(plot_prob, aes(x, y)) +
+  geom_function(fun = odds_to_probability, 
+                color = "blue",
+                linewidth = 1
+  )
+  
+```
+
+1.  Here we can see that we get the exact same curve using the oddsratio, as we did using the logit
+2.  I.e., this shows us the relative change in probability
+3.  The relative change in odds is 3.2755 times the change in X, which corresponds to an exponential increase in absolute change:
+
+**Absolute change in OR (just to demonstrate)**
+
+```{r}
+plot_abs <- data.frame(x = 1:40,
+                       y = odds_ratio_function(1:40))
+
+ggplot(plot_abs, aes(x,y)) +
+  geom_function(fun = odds_ratio_function,
+                color = "blue",
+                linewidth = 1)
+```
+
+### Prediction Accuracy: Sensitivity and Specificity
+
+1.  Another measure of goodness of fit is how well our model predicts; or rather how well it classifies our datapoints.
+2.  Sensitivity is the proportion of true positives
+3.  Specificity is the proportion of true negatives
+
+**R**
+
+```{r}
+# Gathering the dataset used in our model (this way we do not need to remove missing values our selves)
+model_data_with_predictions <- reg_survived_age[["model"]] |>
+  mutate(predicted_logit = predict(reg_survived_age))
+
+# Converting fitted logit to probabilites
+model_data_with_predictions <- model_data_with_predictions %>% mutate(
+  predicted = 1/(1 + exp(-predicted_logit))
+)
+
+# Using the case_when function to predict which category someone belongs to
+model_data_with_predictions <- model_data_with_predictions %>% mutate(
+  predicted = case_when(predicted <= 0.5 ~ 0,
+                        predicted >= 0.5 ~ 1)
+)
+
+# Optionally we can just use the logit it selv, since 0.5 corresponds to 0 logit
+model_data_with_predictions <- model_data_with_predictions %>% mutate(
+  predicted2 = case_when(predicted_logit <= 0 ~ 0,
+                        predicted_logit >= 0 ~ 1)
+)
+
+# Using probability
+table(model_data_with_predictions$Survived, 
+      model_data_with_predictions$predicted)
+
+
+# Using logit
+table(model_data_with_predictions[,1],
+      model_data_with_predictions[,4])
+
+# We could go on ...
+
+
+```
+
+From these numbers we can calculate our sensitivity, specificity, positive predictive value etc. Doing it this way is a bit tedious, and it is easier to use a pre-programmed function (e.g., pprint)
+
+```{r}
+
+psummary(reg_survived_age, accuracy = T)
+```
+
+**STATA**
+
+In STATA we can simply type *estat* (i.e., estimate statistic) *class* (i.e., classification)
+
+```{stata}
+logit Survived Age2
+estat class
+```
+
+## Exercises
+
+1.  Run a logistic regression where Survived is the dependent variable, and independent is Age (NOT Age2!)
+2.  Interpret the regression
+3.  Use the regression to predict the probability of surviving at ages 0, 10, 20, 30 and 40.
+4.  Find the sensitivity and specificity of your model
+5.  Visualize your regression on a 2d plot
+
+# Section 2: Multiple Logistic Regression
+
+In this section we're going to look at more complex logistic regression models, using dummy variables and interaction terms
+
+## Example 1: Adding a dummy-variable
+
+1.  In this example were going to predict *Survived* using *Sex* and Age
+
+**R**
+
+```{r}
+reg_survived_sex_age <- glm(Survived ~ Sex + Age, 
+                            family = binomial(),
+                            data = titanic)
+
+
+reg_survived_sex_age <- glm(Survived ~ Sex + Age, 
+                               data = titanic, 
+                               family = binomial(link = "logit") )
+
+psummary(reg_survived_sex_age, accuracy = T)
+
+```
+
+**STATA**
+
+```{stata}
+logit Survived Sex Age
+estat class
+```
+
+**Anyone want to interpret?**
+
+```{r}
+cat(interpretation_2)
+```
+
+1.  To get a better sense of our model we can check the difference in porbability between men and women (i.e. the effect of sex), at mean Age
+
+```{r}
+coefficents_model <- coefficients(reg_survived_sex_age)
+
+mean_age <- mean(titanic$Age, na.rm = T)
+                 
+prob_mean_age_female <- plogis(coefficents_model["(Intercept)"] + 
+                                 mean_age*coefficents_model["Age"]
+                                 )
+
+prob_mean_age_male <- plogis(coefficents_model["(Intercept)"] + 
+                               mean_age*coefficents_model["Age"] +
+                               coefficents_model["Sexmale"])
+prob_mean_age_female
+prob_mean_age_male
+prob_mean_age_male - prob_mean_age_female
+```
+
+**STATA**
+
+```{stata}
+logit Survived Sex Age
+margins, at(Sex = (0 1)) atmeans
+```
+
+Here we can see that men at mean age have a 54% lower probability of surviving compared to women. More specifically women at mean age have a 75% probability of surviving, while men have a 21% probability of surviving
+
+### Visualizing adding a dummy
+
+```{r}
+visreg(reg_survived_sex_age, scale = "response")
+```
+
+```{r}
+visreg(reg_survived_sex_age, xvar = "Age", by = "Sex", scale = "response")
+```
+
+```{stata}
+quietly logit Survived Sex Age
+margins, at (Age = (0(0.2)50) Sex = (0(1)1))
+marginsplot, noci plotopts(msize(0) lwidth(.6))
+```
+
+### ![](images/Skjermbilde%202023-06-14%20133011.png){width="659"}
+
+### Example: Adding a dummy interaction term
+
+Now we expand the previous model, including an interactionterm between age and sex
+
+```{r}
+reg_survived_sex_int_age <- glm(Survived ~ Sex*Age, 
+                                data = titanic,
+                                family = binomial(link = "logit"))
+psummary(reg_survived_sex_int_age, accuracy = T)
+```
+
+```{stata}
+logit Survived i.Sex##c.Age 
+estat class
+```
+
+1.  Here we can see that Age has a stronger negative effect for men, where they have a logit decrease of roughly -0.2 logit/log(odds) per unit change in Age, compared to .02 for women
+2.  Note that these are very small effects, and neither would likely be significant on their own, but the difference between them is larger than the size of the effects themselves)
+
+```{r}
+visreg(reg_survived_sex_int_age, xvar = "Age", by = "Sex", scale = "response")
+
+```
+
+Since we have saturated all interaction terms, we can simply plot the effect for each sex seperately
+
+```{r}
+titanic %>%  ggplot(aes(x = Age,
+                        y = Survived,
+                        colour = Sex)) +
+  geom_point() +
+  geom_smooth(method = "glm", 
+              method.args = list(family = binomial),
+              fullrange = T)
+```
+
+```{stata}
+quietly logit Survived i.Sex##c.Age
+margins, at(Age = (0(0.5)50) Sex = (0(1)1))
+marginsplot, noci plotopts(lwidth(0.6) msize(0))
+```
+
+## ![](images/Skjermbilde%202023-06-14%20133323.png)
+
+## Example: Adding a second covariate with interaction
+
+1.  In this example we expand our previous model to include a second ordinal variable *Pclass.*
+2.  We will saturate all interactionterms
+
+```{r}
+reg_int_sex_age_pclass <- glm(Survived ~ Sex*Age*Pclass,
+                              data = titanic,
+                              family = binomial(link = "logit"))
+
+psummary(reg_int_sex_age_pclass, a = T)
+```
+
+```{stata}
+logit Survived i.Sex##c.Age##c.Pclass
+```
+
+**R**
+
+```{r}
+library(margins)
+
+predictions <- margins(reg_int_sex_age_pclass, at = list(Sex = c("male",
+                                                                 "female"),
+                                                         Pclass = c(1,2,3),
+                                                         Age = seq(0,50,10)
+                                          )
+                       )
+
+predictions <- predictions %>% mutate(Pclass = as.factor(Pclass))
+
+predictions %>% ggplot(aes(x = Age,
+                           y = fitted,
+                           colour = Sex,
+                           linetype = Pclass)
+                       ) + 
+  geom_smooth(method = "glm", method.args = list(family = binomial))
+```
+
+**STATA**
+
+```{stata}
+quietly logit Survived i.Sex##c.Age##c.Pclass
+margins, at (Age = (0(0.5)50) Sex = (0(1)1) Pclass = (1(1)3))
+marginsplot, noci plotopts(msize(0) lwidth(0.6))
+```
+
+![](images/Skjermbilde%202023-06-14%20133630.png)This is a quite messy, so we could instead create a seperate plot for each Pclass
+
+**R**
+
+```{r}
+predictions <- margins(reg_int_sex_age_pclass, at = list(Sex = c("male",
+                                                                 "female"),
+                                                         Pclass = c(1,2,3),
+                                                         Age = seq(0,50,10)
+                                          )
+                       )
+
+predictions <- predictions %>% mutate(Pclass = as.factor(Pclass))
+
+predictions %>% ggplot(aes(x = Age,
+                           y = fitted,
+                           colour = Sex)
+                       ) + 
+  geom_smooth(method = "glm", method.args = list(family = binomial)) +
+  facet_wrap(~ Pclass)
+
+```
+
+**STATA**
+
+I do not know a very elegant way of making stata make three distinct plots, since the marginsplot command does not take the *by :* prefix. But we can do it in three separate iterations
+
+marginsplot, noci plotopts(msize(0))
+
+```{stata}
+// Pclass = 1
+quietly logit Survived i.Sex##c.Age##c.Pclass
+margins, at (Age = (0(0.5)50) Sex = (0(1)1) Pclass = 1)
+marginsplot, noci plotopts(msize(0) lwidth(0.7))
+
+// Pclass = 2
+quietly logit Survived i.Sex##c.Age##c.Pclass
+margins, at (Age = (0(0.5)50) Sex = (0(1)1) Pclass = 2)
+marginsplot, noci plotopts(msize(0) lwidth(0.7))
+
+// Pclass = 3
+quietly logit Survived i.Sex##c.Age##c.Pclass
+margins, at (Age = (0(0.5)50) Sex = (0(1)1) Pclass = 3)
+marginsplot, noci plotopts(msize(0) lwidth(0.7))
+
+```
+
+**Pclass = 1**
+
+![](images/Skjermbilde%202023-06-14%20125318.png){width="654"}
+
+**Pclass = 2**
+
+![](images/Skjermbilde%202023-06-14%20125339.png){width="655"}
+
+**Pclass = 3**
+
+![](images/Skjermbilde%202023-06-14%20125358.png){width="652"}
+
+## Exercises
+
+1.  Run a multiple logistic regression with Survived as dependent variable, and inpendent variables as: Sex and Age2
+2.  Interpret the regression
+3.  Find the difference in probability of surviving between men and women at mean(Age2)
+4.  Visualize the model
+5.  Add an interactionterm to the model in exercise 1, and repeat exercises 2-4
+
+# Appendix
+
+## Appendix 1: Code used to generate Age2
+
+```{r}
+# Here i use the rnorm function (which draws a random number from a norm-dist.) to generate values from two different distributions for those who survived, and those who died, using the case_when function, 
+titanic2 <- titanic %>% mutate(Age2 = case_when(
+                                 Survived == 0 ~ rnorm(Survived, 15, 3),
+                                 Survived == 1 ~ rnorm(Survived, 27, 4)
+                                 )
+                               )
+
+# Here i use the round function to remove decimals (i.e., making them integers)
+titanic2 <- titanic2 %>% mutate(Age2 = round(Age2))
+```
+
+```{r}
+interpretation_1 <- "1. Firstly we can see that the model as a whole is significant and has a large Pseudo R2 \n
+2. Secondly we can see that the intercept is -24, indicating an estimated log(odds) (logit) of -24 at age = 0. \n
+3. Thirdly we can see that the coefficient for age2 is 1.18 (p <.001) indicating a 1.18 increas in logit (increasing odds for surviving) per one unit change (1 year) in age. \n"
+
+interpretation_2 <- "1. Firstly we can see that the model as a whole is significant and has a large Pseudo R2 \n
+2. Secondly we can see that the intercept is 1.277-, indicating an estimated log(odds) (logit) of 1.277 at age = 0 and sex = female. \n
+3. Thirdly we can see that the coefficient for age is -0.0054 (p = .390) which is not significant, if it were it would indicate a 0.0054 decrease in logit (decreasing odds for surviving) per one unit change (1 year) in age, controlled for sex. \n
+4. We can se that Sex has a coefficient of -2.47 (p < .001) indicating that men have 2.47 lower log(odds) of surviving. \n
+5. We can see that the model has an okay sensitivity at 67%, and a better specificity at 84.91%, but this is likely because more people died, than survived"
+
+
+```

@@ -1,0 +1,436 @@
+---
+title: "Multilevel and Longitudinal"
+output: html_notebook
+---
+
+# Packages and Dataset
+
+```{r}
+library(pprint)
+library(tidyverse)
+library(Statamarkdown)
+```
+
+```{r}
+setwd("C:/Users/slupp/OneDrive/Skrivebord/NTNU/Mehmet/PSY8003/multilevel")
+depression <- readRDS("depression.rds")
+```
+
+```{stata}
+cd "C:\Users\slupp\OneDrive\Skrivebord\NTNU\Mehmet\PSY8003\multilevel"
+use depression.dta
+```
+
+# Converting From Wide to Long Format
+
+1.  Most Softwares require long format for multilevel analyses
+2.  We will therefore begin with converting from long to short format
+3.  It is quite simple if you only want to collapse your dataset into one variable, but more complicated with multiple as in the depression dataset
+
+**R: using the pivot_longer function**
+
+```{r}
+
+depression.long <- depression %>%
+  pivot_longer(cols = starts_with("week") | starts_with("BDI"),
+               names_to = c(".value", "session"),
+               names_pattern = "(BDI|week)([0-9]+)") %>%
+  mutate(session = as.integer(session))
+
+                               
+```
+
+```{r}
+depression.long.BDI <- depression %>%
+  pivot_longer(cols = starts_with("BDI"),
+               names_to = "session",
+               values_to = "BDI",
+               names_prefix = "BDI",
+               names_transform = as.integer) %>%
+  select(!starts_with("week")) # This excludes week from the dataset
+
+
+depression.long.week <- depression %>%
+  pivot_longer(cols = starts_with("week"),
+               names_to = "session",
+               values_to = "week",
+               names_prefix = "week",
+               names_transform = as.integer) %>%
+  select(!starts_with("BDI")) # This excludes BDI from the dataset 
+
+depression.long2 <- inner_join(depression.long.week,
+                               depression.long.BDI)
+```
+
+We can check that we get the same result
+
+```{r}
+all.equal(depression.long2, depression.long, ignore_col_order = TRUE)
+```
+
+**STATA:** as usual it is a "bit" easier in STATA
+
+```{stata}
+reshape long BDI week, i(ID) j(session)
+*save depression_long.dta, replace
+describe
+```
+
+## Converting to wide format
+
+```{r}
+depression.wide <- pivot_wider(depression.long, 
+            names_from = session,
+            values_from = c(week, BDI))
+
+psummary(depression.wide)
+```
+
+**STATA**
+
+```{stata}
+use depression_long.dta, clear
+reshape wide BDI week, i(ID) j(session)
+sum
+```
+
+# Exercises
+
+1.  Open the *diet.dta/.rds* dataset.
+2.  The dataset is coded in wide format, with two variables denoting *weight* (*pre.weight* and *post.weight*). Convert the dataset to long format so that you have one column with all the values, and another column representing the timepoints
+    1.  In STATA it is easier of you rename *pre_weight* and *post_weight* to *weight0* and *weight1*
+
+# Complete, Partial and No pooling
+
+## Complete Pooling
+
+```{r}
+sample_ids <- sample(unique(depression.long$ID), 10)
+
+depression.long %>% 
+  filter(ID %in% sample_ids) %>%
+  ggplot(aes(x = week, 
+                               y = BDI)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+## No pooling
+
+**Plot**
+
+```{r}
+sample_ids <- sample(unique(depression.long$ID), 5)
+
+depression.long %>% 
+  filter(ID %in% sample_ids) %>%
+  ggplot(aes(x = week,
+             y = BDI, 
+             colour = ID)) +
+  geom_point() +
+  geom_path() 
+
+sample_ids <- sample(unique(depression.long$ID), 5)
+
+depression.long %>% 
+  filter(ID %in% sample_ids) %>%
+  ggplot(aes(x = week,
+             y = BDI, 
+             colour = ID)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+# Two-Level Empty Model
+
+1.  $Y_{ij} = \beta_{0j} + e_{ij}$
+2.  i = individual
+3.  j = level (i.e., group)
+4.  beta_0j = mean Y for group j
+5.  error_ij = error term for each individual
+6.  $\beta_{0j} = \beta_0 + u_{0j}$
+7.  beta_0 is the overall mean (i.e., the estimated mean of the whole sample)
+8.  u_oj is the error term for the group
+9.  Combining both equations we get:
+10. $Y_{ij} = \beta_0 + u_{0j} + e_{ij}$
+11. Meaning: *dependent_var =* *total_mean + error_term_level_2 + error_term_level_1*
+
+```{r}
+# install.packages("lme4")
+# install.packages("lmerTest")
+
+library(lmerTest)
+
+empty_mod <- lmer(BDI ~ (1|ID), data = depression.long, REML = TRUE # Default
+                  )
+summary(empty_mod)
+```
+
+**STATA**
+
+1.  In STATA we use the mixed command, where the syntax is
+2.  `mixed depvar fe_equation [|| re_equation] [|| re_equation …] [, options]`
+3.  *fe_equation* : `[indepvars] [if] [in] [weight] [, fe_options]`
+4.  *re_equation* is either: `levelvar: [varlist] [, re_options]`
+5.  or: `levelvar: R.varname [, re_options]`
+6.  *levelvar* is a variable identifying the group structure for the random effects at that level or is \_all representing one group comprising all observations.
+7.  options, : we can use *mle* (or reml) to specify maximum likelyhood estimation and *variance* or *stddev* (among other options) to specify what to report
+8.  If we want the same result as in R we must either specify (REML = FALSE in R, and , mle in STATA) or (REML = TRUE in R, and ,reml in STATA)
+
+```{stata}
+// NB change profile.do
+mixed BDI || ID:, reml stddev
+```
+
+# Random Intercept Model
+
+1.  We can now expand our model to include more independent variables
+2.  In a random intercept model all levels are assumed to have the same coefficients (i.e., same slopes) and random effects represent differences in intercepts
+3.  In this sense, intercepts for levels are conceptualized as drawn from a normal distribution for intercepts.
+4.  Intercepts for level 2 are drawn from the pooled distribution
+5.  Intercepts for level 1 are drawn from the individual distributions for values in level 2
+6.  We now estimate the same model, only including week as a predictor
+7.  This then becomes akin to a repeated measures ANOVA, where the grouping variable is participant ID
+
+```{r}
+random_int <- lmer(BDI ~ week + (1|ID), data = depression.long, REML = TRUE)
+summary(random_int)
+```
+
+```{stata}
+mixed BDI week || ID: , reml stddev
+```
+
+### Visualizing the model
+
+```{r}
+library(margins)
+ID_sample <- depression.long$ID |> unique() |> sample(5) |> as.character()
+ID_sample
+
+predictions <- margins(random_int, at = list(week = c(0,33),
+                                             ID = ID_sample
+                                             )
+                       )
+
+predictions %>% 
+  ggplot(aes(x = week,
+             y = fitted,
+             colour = ID)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  # adding estimated regline using maximum likelyhood
+  geom_abline(intercept = random_int@beta[1],
+              slope = random_int@beta[2], linewidth = 1.5,
+              color = "darkblue") +
+  geom_smooth(data = depression.long, aes(x = week, 
+              y = BDI,
+              colour = "red"),method = "lm", se = F, inherit.aes = F)
+
+
+
+```
+
+**STATA**
+
+1.  I havent found a(n easy) way of visualizing this in STATA
+
+## Random Coefficents Model
+
+1.  We can further expand our model to allow differences in slope across levels (i.e., differences in slope for those who have jobs/not, and individual differences in slopes + intercept)
+2.  We can either choose to assess intercepts and slope as independent, or as dependent
+
+```{r}
+# Dependendent
+rand_coeff <- lmer(BDI ~ week + (1 + week|ID), 
+                   data = depression.long,
+                   REML = TRUE # Again this is the default so it is not really necessary to specify it
+                   )
+summary(rand_coeff)
+# Independent 0 = no intercept
+rand_coeff <- lmer(BDI ~ week + (1|ID) + (0 + week|ID), 
+                   data = depression.long,
+                   REML = TRUE)
+summary(rand_coeff)
+```
+
+1.  The margins function/package is easy to use, and can visualize a lot of different models. However, as you become more comfortable with R i recommend using the predict function instead, which generates predicted values for your participants, based on a model.
+2.  This is particularly useful with multilevel models, where different levels have their own regressions, with differen ranges in their independent variable
+
+```{r}
+ID_sample <- depression.long$ID |> unique() |> sample(5)
+
+pred <- rand_coeff@frame %>% 
+  mutate(fitted = predict(rand_coeff)
+)
+
+pred %>% 
+  filter(ID %in% ID_sample) %>% 
+  ggplot(aes(x = week, 
+                    y = fitted,
+                    linetype = ID,
+                    colour = ID)) +
+  geom_smooth(method = "lm", formula = y ~ x, se = F) +
+  geom_abline(intercept = rand_coeff@beta[1],
+              slope = rand_coeff@beta[2],
+              linewidth = 1.4) +
+  geom_point(mapping = aes(x = week,
+                           y = BDI))
+
+```
+
+**STATA**
+
+1.  By default Stata assumes that random intercepts and random slopes are independent of each other.
+2.  We can change this by adding cov(unstructured) in the options
+
+```{stata}
+// Dependent 
+mixed BDI week || ID: week, cov(unstructured) reml stddev
+// independent
+mixed BDI week || ID: week, reml stddev
+```
+
+### Interaction Terms: Random Intercept
+
+1.  As with normal regressions we can add (in theory) as many predictors as we want, also including interaction terms
+2.  Luckily for us, interaction terms can be interpreted the same way as in a normal model
+3.  It might for example be that there is an interaction effect between time in therapy (i.e., week) and employment status (i.e., job)
+
+```{r}
+int_job_week <- lmer(BDI ~ week*job+ (1 |ID), 
+                     data = depression.long, REML = TRUE)
+
+summary(int_job_week)
+```
+
+```{stata}
+mixed BDI c.week##i.job || ID:, reml cov(unstructured) stddev
+ cov(unstructured) stddev
+```
+
+#### Visualizing Interaction
+
+1.  The margins function is quite good, but as you get more familiar with R i recommend using the predict function, as it is more flexible
+
+```{r}
+fitted_vals <- predict(int_job_week)
+fitted_df <- int_job_week@frame %>%
+  mutate(fitted = fitted_vals,
+         job = as.factor(job))
+
+fitted_df %>% ggplot(aes(x = week,
+                         y = fitted,
+                         colour = job)) +
+  geom_count(aes(x = week,
+                   y = BDI, 
+                   colour = job,
+                 opacity = .2), 
+               inherit.aes = F ) +
+  geom_smooth(method = "lm", se = F, fullrange = T) 
+  
+```
+
+```{stata}
+quietly mixed BDI c.week##i.married|| ID:, mle cov(unstructured) stddev
+	
+// Plot 
+margins, at(week = (1 33) married = (0 1))
+marginsplot
+	
+```
+
+![](images/Skjermbilde%202023-06-22%20115440.png){width="657"}
+
+### Including Random Interaction Terms
+
+1.  We can include random interaction terms in our model as well, but we will quickly run into problems of having to few participants per group
+2.  E.g.,non of our participants changed their employment status during their treatment, making it impossible to assess a unique interaction effect for each participant (they were likely only asked once)
+
+```{r}
+ID_sample <- depression.long$ID |> unique() |> sample(6)
+
+depression.long %>% 
+  filter(ID %in% ID_sample) %>% 
+  ggplot(aes(x = week,
+             y = job,
+             colour = ID)) +
+  geom_point() +
+  geom_path()
+```
+
+```{r}
+rand_int_effect <- lmer(BDI~ week*job + (1+week*job|ID),
+                        data = depression.long, REML = TRUE)
+summary(rand_int_effect)
+```
+
+As mentioned we can get som convergence issues, so for demonstrative purposes i have set the max iteration to 20. It is also best to create your interaction term separately when allowing it it vary among levels.
+
+```{stata}
+gen week_job = week*job
+set maxiter 20
+mixed BDI c.week i.job week_job || ID: 	week job week_job, mle stddev cov(unstructured)   
+	
+```
+
+### Random Intercept Model with extra levels (three level) 
+
+```{r}
+rand_coeff_ID <- lmer(BDI ~  week + (1|married) + (1|ID),
+     data = depression.long, 
+     REML = TRUE)
+rand_coeff_ID
+
+```
+
+**STATA\
+**NB: It seems that STATA requires the levels to be ordered correctly (i dont know why) when specifying the model. (e.g., Schools \> Classrooms \> Students, NOT: Students \> Classrooms \> Schools)
+
+```{stata}
+set maxiter 50
+mixed BDI week || married:, || ID:, reml stddev
+```
+
+# Exercises
+
+Use the longformat version of the diet.dta/.rds dataset
+
+1.  Run a random intercept model where your independent variable is *timepoint,* and dependent variable is weight, and the level-variable is person
+    1.  Optional for those using R: visualize your model using either the margins command, or the predict function
+2.  Run a random slope model where your independent variable is timepoint, and dependent variable is weight, and level is person
+    1.  Optional for those using R: visualize your model using either the margins command, or the predict function
+3.  Run a random intercept model with an interaction term between timepoint and diet, level = person
+    1.  Remember that both diet and timepoint should be treated as factors/dummy variables
+4.  Visualize your interaction effect
+5.  Run a three-level multilevel model where the levels are: diet and individual, dependent: weight, independent = timepoint
+
+# Appendix
+
+## Intra Class Correlation 
+
+**R**
+
+```{r}
+#install.packages("performance")
+library(performance)
+
+icc(rand_coeff)
+
+icc(rand_coeff_ID, by_group = TRUE)
+```
+
+**STATA**
+
+```{stata}
+quietly mixed BDI week || ID: week, stddev reml
+estat icc
+
+```
+
+```{stata}
+quietly set maxiter 50
+quietly mixed BDI week || married:, || ID:, reml stddev cov(unstructured) 
+estat icc
+```
+
+Note we get some differences sine we didnt allow the model to converge
