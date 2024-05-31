@@ -122,11 +122,11 @@ factor_vector
 
 ```{r}
 ordered_factor_vector <- factor(c(1,2,3,1,2), 
-                        levels = c(1,2,3), 
-                        labels = c("firstplace", 
-                                   "secondplace", 
-                                   "thirdplace"),
-                        ordered = TRUE)
+                                levels = c(1,2,3), 
+                                labels = c("firstplace", 
+                                           "secondplace", 
+                                           "thirdplace"),
+                                ordered = TRUE)
 ordered_factor_vector
 ```
 
@@ -222,7 +222,7 @@ Using named arguments
 ```{r}
 weight <- df$weight
 
-mean(x = df$weight,trim = 0, na.rm = TRUE) 
+mean(x = df$weight, trim = 0, na.rm = TRUE) 
 mean(na.rm = TRUE, x = df$weight, trim = 0)
 
 # You can also use some "unique prefix"
@@ -609,7 +609,6 @@ df |>
 
 # dplyr (or rather magrittr) has its own pipe operator %>% which has some ease of use applications when using dplyr functions, for example allowing for autocomplete for variable names e.g,. 
 
-df %>% lm(data = ,formula = weight ~ Diet) %>% pprint::preg()
 
 # NB the pipe operator usually applies to the first argument, so in this instance we must use an empty named argument at the start 
 ```

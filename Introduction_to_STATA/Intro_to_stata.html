@@ -1620,24 +1620,42 @@ dataset</li>
 <li>In general I recommend that you always set a working directory usng
 the cd command:</li>
 </ol>
-<pre class="stata"><code>cd &quot;C:/Users/slupp/OneDrive/Skrivebord/NTNU/Mehmet/PSY8003/Introduction_to_STATA&quot;</code></pre>
-<pre><code>&gt; ATA&quot;
-C:\Users\slupp\OneDrive\Skrivebord\NTNU\Mehmet\PSY8003\Introduction_to_STATA</code></pre>
+<pre class="stata"><code>cd &quot;~/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/&quot;</code></pre>
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+/home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>If we use the dir command, we can see the files in our
 directory</li>
 </ol>
 <pre class="stata"><code>dir</code></pre>
-<pre><code>   0.0k   6/22/23 16:25  stata47105c068a4.do
-   0.0k   6/22/23 16:25  stata47105c068a4.log
- 342.1k   5/26/23 12:34  STATA_syntax.pdf  
-   9.2k   5/26/23 12:12  workout1.dta      </code></pre>
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+
+total 2616
+-rw-r--r-- 1 kjell kjell   12198 juni  23  2023 Introduction_to_stata.do
+-rw-r--r-- 1 kjell kjell 1562810 mai   29 12:25 Intro_to_stata.html
+-rw-r--r-- 1 kjell kjell  706747 juni  22  2023 Intro_to_stata.nb.html
+-rw-r--r-- 1 kjell kjell   14147 mai   29 12:26 Intro_to_stata.Rmd
+-rw-rw-r-- 1 kjell kjell     339 mai   29 12:26 profile.do
+-rw-rw-r-- 1 kjell kjell       4 mai   29 12:26 stata2943285553cc.do
+-rw-rw-r-- 1 kjell kjell     102 mai   29 12:26 stata2943285553cc.log
+-rw-r--r-- 1 kjell kjell  350307 mai   26  2023 STATA_syntax.pdf
+-rw-r--r-- 1 kjell kjell    9446 mai   26  2023 workout1.dta</code></pre>
 <ol style="list-style-type: decimal">
 <li>We can then see that we have a file called “workout1.dta” to open it
 we can use the “use” command</li>
 </ol>
 <pre class="stata"><code>use workout1.dta, clear //dont worry about , clear this just overwrites any existing dataset </code></pre>
-<pre><code>&gt; xisting dataset </code></pre>
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...</code></pre>
 <ol style="list-style-type: decimal">
 <li>If we want to browse our dataset we can use the command browse.</li>
 <li>NB: Each STATA session can only have one dataset at once, so we can
@@ -1646,7 +1664,15 @@ just write the commands without specifying a dataset</li>
 (i.e., like in Excel)</li>
 </ol>
 <pre class="stata"><code>browse </code></pre>
-<pre><code>request ignored because of batch mode</code></pre>
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+command browse is unrecognized
+r(199);
+
+r(199);</code></pre>
 </div>
 </div>
 <div id="section-1-the-stata-language" class="section level1">
@@ -1682,7 +1708,12 @@ meta-information (i.e., how the variable is coded)</li>
 </ol></li>
 </ol>
 <pre class="stata"><code>help language</code></pre>
-<pre><code>request ignored because of batch mode</code></pre>
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+request ignored because of batch mode</code></pre>
 </div>
 <div id="varlist-and-varname" class="section level3">
 <h3>[varlist] and [varname]</h3>
@@ -1716,16 +1747,20 @@ using _all or *
 <pre class="stata"><code>summarize v01 
 summarize v01 v02
 summarize </code></pre>
-<pre><code>    Variable |        Obs        Mean    Std. Dev.       Min        Max
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |        246    1.382114    .4868948          1          2
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |        246    1.382114    .4868948          1          2
          v02 |        246    39.15854    12.56831         16         76
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |        246    1.382114    .4868948          1          2
          v02 |        246    39.15854    12.56831         16         76
@@ -1744,11 +1779,15 @@ have unique prefixes, e.g., “<em>in”)</em></li>
 </ol>
 <pre class="stata"><code>sum v01
 sum </code></pre>
-<pre><code>    Variable |        Obs        Mean    Std. Dev.       Min        Max
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |        246    1.382114    .4868948          1          2
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |        246    1.382114    .4868948          1          2
          v02 |        246    39.15854    12.56831         16         76
@@ -1776,9 +1815,17 @@ dataset by the relevant variable v01(Gender)</p>
 <pre class="stata"><code>sort v01
 by v01: summ
 </code></pre>
-<pre><code>-&gt; v01 = Women
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+&gt; ile.do ...
+
+
+
+
+-------------------------------------------------------------------------------
+-&gt; v01 = Women
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |        152           1           0          1          1
          v02 |        152    39.83553    11.67464         16         67
@@ -1792,7 +1839,7 @@ by v01: summ
 -------------------------------------------------------------------------------
 -&gt; v01 = Men
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         94           2           0          2          2
          v02 |         94    38.06383    13.88804         16         76
@@ -1812,9 +1859,16 @@ variables as we want</li>
 <pre class="stata"><code>
 *by v01 v06 v05, sort: sum 
 bysort v01 v06 v05: sum </code></pre>
-<pre><code>-&gt; v01 = Women, v06 = Single, v05 = Vikhammer
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+&gt; ile.do ...
+
+
+
+-------------------------------------------------------------------------------
+-&gt; v01 = Women, v06 = Single, v05 = Vikhammer
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          7           1           0          1          1
          v02 |          7    31.42857    16.23635         16         53
@@ -1828,7 +1882,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Single, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          5           1           0          1          1
          v02 |          5        29.2    13.80942         16         49
@@ -1842,7 +1896,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Single, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          7           1           0          1          1
          v02 |          7    35.85714    18.62282         17         64
@@ -1856,7 +1910,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Single, v05 = Midtsand
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          1           1           .          1          1
          v02 |          1          46           .         46         46
@@ -1870,7 +1924,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Single, v05 = Other
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          1           1           .          1          1
          v02 |          1          19           .         19         19
@@ -1884,7 +1938,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Has a girl/boy friend, v05 = Vikhammer
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          2           1           0          1          1
          v02 |          2          18           0         18         18
@@ -1898,7 +1952,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Has a girl/boy friend, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          1           1           .          1          1
          v02 |          1          21           .         21         21
@@ -1912,7 +1966,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Has a girl/boy friend, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          2           1           0          1          1
          v02 |          2        29.5    6.363961         25         34
@@ -1926,7 +1980,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Has a girl/boy friend, v05 = Other
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          1           1           .          1          1
          v02 |          1          17           .         17         17
@@ -1940,7 +1994,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Cohabitant, v05 = Vikhammer
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         25           1           0          1          1
          v02 |         25       35.88    8.724105         20         57
@@ -1954,7 +2008,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Cohabitant, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          4           1           0          1          1
          v02 |          4       30.75    4.425306         26         35
@@ -1968,7 +2022,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Cohabitant, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          6           1           0          1          1
          v02 |          6    32.16667    8.975894         23         48
@@ -1982,7 +2036,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Cohabitant, v05 = Torp
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          1           1           .          1          1
          v02 |          1          40           .         40         40
@@ -1996,7 +2050,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Cohabitant, v05 = Other
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          3           1           0          1          1
          v02 |          3    40.66667    5.131601         35         45
@@ -2010,7 +2064,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Married, v05 = Vikhammer
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         42           1           0          1          1
          v02 |         42    44.83333    8.467777         27         62
@@ -2024,7 +2078,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Married, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         21           1           0          1          1
          v02 |         21    44.14286    10.30672         34         67
@@ -2038,7 +2092,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Married, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         17           1           0          1          1
          v02 |         17    46.05882    8.605744         30         62
@@ -2052,7 +2106,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Women, v06 = Married, v05 = Other
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          6           1           0          1          1
          v02 |          6    45.33333    9.831921         28         58
@@ -2066,7 +2120,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Single, v05 = Vikhammer
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          6           2           0          2          2
          v02 |          6    21.83333    10.96206         16         44
@@ -2080,7 +2134,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Single, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          4           2           0          2          2
          v02 |          4       28.25    13.04799         17         47
@@ -2094,7 +2148,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Single, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          1           2           .          2          2
          v02 |          1          47           .         47         47
@@ -2108,7 +2162,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Single, v05 = Other
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          3           2           0          2          2
          v02 |          3    31.66667    14.50287         17         46
@@ -2122,7 +2176,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Has a girl/boy friend, v05 = Vikhammer
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          6           2           0          2          2
          v02 |          6          26    13.02306         16         48
@@ -2136,7 +2190,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Has a girl/boy friend, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          3           2           0          2          2
          v02 |          3          18    2.645751         16         21
@@ -2150,7 +2204,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Has a girl/boy friend, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          2           2           0          2          2
          v02 |          2        29.5    16.26346         18         41
@@ -2164,7 +2218,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Has a girl/boy friend, v05 = Other
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          2           2           0          2          2
          v02 |          2        19.5    3.535534         17         22
@@ -2178,7 +2232,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Cohabitant, v05 = Vikhammer
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         13           2           0          2          2
          v02 |         13    35.61538    8.684646         22         48
@@ -2192,7 +2246,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Cohabitant, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          4           2           0          2          2
          v02 |          4       39.75    6.238322         33         46
@@ -2206,7 +2260,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Cohabitant, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          6           2           0          2          2
          v02 |          6    34.66667    10.13246         23         51
@@ -2220,7 +2274,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Cohabitant, v05 = Other
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          1           2           .          2          2
          v02 |          1          25           .         25         25
@@ -2234,7 +2288,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Married, v05 = Vikhammer
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         21           2           0          2          2
          v02 |         21          47    11.17587         30         71
@@ -2248,7 +2302,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Married, v05 = Saksvik
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          9           2           0          2          2
          v02 |          9    44.66667    6.689544         39         59
@@ -2262,7 +2316,7 @@ bysort v01 v06 v05: sum </code></pre>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men, v06 = Married, v05 = Hundhamaren
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         13           2           0          2          2
          v02 |         13    49.23077    12.14601         35         76
@@ -2299,10 +2353,14 @@ TRUE)</li>
 men only</li>
 </ol>
 <pre class="stata"><code>summarize if v01 == &quot;Men&quot;</code></pre>
-<pre><code>type mismatch
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+type mismatch
 r(109);
 
-end of do-file
 r(109);</code></pre>
 <ol style="list-style-type: decimal">
 <li>This example does not work, and is because were attempting to
@@ -2312,21 +2370,32 @@ specify the value using the labels, not the actual coded value.</li>
 “codebook”</li>
 </ol>
 <pre class="stata"><code>codebook v01</code></pre>
-<pre><code>v01                                                                      Gender
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+
+-------------------------------------------------------------------------------
+v01                                                                      Gender
 -------------------------------------------------------------------------------
 
-                  type:  numeric (byte)
-                 label:  labelv01
+                  Type: Numeric (byte)
+                 Label: labelv01
 
-                 range:  [1,2]                        units:  1
-         unique values:  2                        missing .:  0/246
+                 Range: [1,2]                         Units: 1
+         Unique values: 2                         Missing .: 0/246
 
-            tabulation:  Freq.   Numeric  Label
-                           152         1  Women
-                            94         2  Men</code></pre>
+            Tabulation: Freq.   Numeric  Label
+                          152         1  Women
+                           94         2  Men</code></pre>
 <p>we can now see that women = 1 and men = 2</p>
 <pre class="stata"><code>summarize if v01 == 2</code></pre>
-<pre><code>    Variable |        Obs        Mean    Std. Dev.       Min        Max
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |         94           2           0          2          2
          v02 |         94    38.06383    13.88804         16         76
@@ -2345,57 +2414,68 @@ school education and come from <em>Vikhammer</em></li>
 variables</li>
 </ol>
 <pre class="stata"><code>codebook v01 v03 v05</code></pre>
-<pre><code>v01                                                                      Gender
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+
+-------------------------------------------------------------------------------
+v01                                                                      Gender
 -------------------------------------------------------------------------------
 
-                  type:  numeric (byte)
-                 label:  labelv01
+                  Type: Numeric (byte)
+                 Label: labelv01
 
-                 range:  [1,2]                        units:  1
-         unique values:  2                        missing .:  0/246
+                 Range: [1,2]                         Units: 1
+         Unique values: 2                         Missing .: 0/246
 
-            tabulation:  Freq.   Numeric  Label
-                           152         1  Women
-                            94         2  Men
+            Tabulation: Freq.   Numeric  Label
+                          152         1  Women
+                           94         2  Men
 
 -------------------------------------------------------------------------------
 v03                                                           Educational level
 -------------------------------------------------------------------------------
 
-                  type:  numeric (byte)
-                 label:  labelv03
+                  Type: Numeric (byte)
+                 Label: labelv03
 
-                 range:  [1,4]                        units:  1
-         unique values:  4                        missing .:  1/246
+                 Range: [1,4]                         Units: 1
+         Unique values: 4                         Missing .: 1/246
 
-            tabulation:  Freq.   Numeric  Label
-                            11         1  Primary/Secondary school
-                            74         2  High school
-                            65         3  University up to 3 years
-                            95         4  University more than 3 years
-                             1         .  
+            Tabulation: Freq.   Numeric  Label
+                           11         1  Primary/Secondary school
+                           74         2  High school
+                           65         3  University up to 3 years
+                           95         4  University more than 3 years
+                            1         .  
 
 -------------------------------------------------------------------------------
 v05                                                           Where do you live
 -------------------------------------------------------------------------------
 
-                  type:  numeric (byte)
-                 label:  labelv5
+                  Type: Numeric (byte)
+                 Label: labelv5
 
-                 range:  [1,6]                        units:  1
-         unique values:  6                        missing .:  0/246
+                 Range: [1,6]                         Units: 1
+         Unique values: 6                         Missing .: 0/246
 
-            tabulation:  Freq.   Numeric  Label
-                           122         1  Vikhammer
-                            51         2  Saksvik
-                            54         3  Hundhamaren
-                             1         4  Torp
-                             1         5  Midtsand
-                            17         6  Other</code></pre>
+            Tabulation: Freq.   Numeric  Label
+                          122         1  Vikhammer
+                           51         2  Saksvik
+                           54         3  Hundhamaren
+                            1         4  Torp
+                            1         5  Midtsand
+                           17         6  Other</code></pre>
 <p>Now that we know how the values are coded, we can create our
 expression</p>
 <pre class="stata"><code>summarize if v01 == 2 &amp; v03 == 1 &amp; v05 == 1</code></pre>
-<pre><code>    Variable |        Obs        Mean    Std. Dev.       Min        Max
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          3           2           0          2          2
          v02 |          3    16.66667    1.154701         16         18
@@ -2409,7 +2489,11 @@ expression</p>
 on a given variable. Here we exclude those whith the highest and lowest
 education</p>
 <pre class="stata"><code>sum v03 if v03 &gt;= 2 &amp; v03 &lt;=3</code></pre>
-<pre><code>    Variable |        Obs        Mean    Std. Dev.       Min        Max
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v03 |        139    2.467626    .5007553          2          3</code></pre>
 <div id="combining-if-and-prefix" class="section level4">
@@ -2421,9 +2505,16 @@ men and women ith Primary/Secondary school education and come from
 Vikhammer</li>
 </ol>
 <pre class="stata"><code>bysort v01: summ if v03 == 1 &amp; v05 == 1</code></pre>
-<pre><code>-&gt; v01 = Women
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+&gt; ile.do ...
+
+
+
+-------------------------------------------------------------------------------
+-&gt; v01 = Women
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          2           1           0          1          1
          v02 |          2          30    19.79899         16         44
@@ -2437,7 +2528,7 @@ Vikhammer</li>
 -------------------------------------------------------------------------------
 -&gt; v01 = Men
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |          3           2           0          2          2
          v02 |          3    16.66667    1.154701         16         18
@@ -2458,7 +2549,11 @@ command on</li>
 <li>If we for example want the first 10 participants</li>
 </ol>
 <pre class="stata"><code>sum v03 in 1/10</code></pre>
-<pre><code>    Variable |        Obs        Mean    Std. Dev.       Min        Max
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v03 |         10           3     .942809          2          4</code></pre>
 <ol style="list-style-type: decimal">
@@ -2474,13 +2569,18 @@ both</li>
 sum v02
 gsort - v02
 sum v02 in 1/20</code></pre>
-<pre><code>request ignored because of batch mode
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+&gt; ile.do ...
+
+
+request ignored because of batch mode
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v02 |        246    39.15854    12.56831         16         76
 
-    Variable |        Obs        Mean    Std. Dev.       Min        Max
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v02 |         20       62.35    5.584518         57         76</code></pre>
 </div>
@@ -2503,7 +2603,11 @@ score/average for the total household.</li>
 <pre class="stata"><code>
 sum v01 [fweight=v03]
 </code></pre>
-<pre><code>    Variable |        Obs        Mean    Std. Dev.       Min        Max
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
 -------------+---------------------------------------------------------
          v01 |        734    1.371935    .4836506          1          2</code></pre>
 </div>
@@ -2517,16 +2621,20 @@ after ,</li>
 <li>For example the sum function has the option: <em>“detail”</em></li>
 </ol>
 <pre class="stata"><code>sum , detail</code></pre>
-<pre><code>                           Gender
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+                           Gender
 -------------------------------------------------------------
       Percentiles      Smallest
  1%            1              1
  5%            1              1
 10%            1              1       Obs                 246
-25%            1              1       Sum of Wgt.         246
+25%            1              1       Sum of wgt.         246
 
 50%            1                      Mean           1.382114
-                        Largest       Std. Dev.      .4868948
+                        Largest       Std. dev.      .4868948
 75%            2              2
 90%            2              2       Variance       .2370665
 95%            2              2       Skewness        .485224
@@ -2538,10 +2646,10 @@ after ,</li>
  1%           16             16
  5%           17             16
 10%           20             16       Obs                 246
-25%           32             16       Sum of Wgt.         246
+25%           32             16       Sum of wgt.         246
 
 50%           40                      Mean           39.15854
-                        Largest       Std. Dev.      12.56831
+                        Largest       Std. dev.      12.56831
 75%           47             69
 90%           55             71       Variance       157.9625
 95%           59             71       Skewness       .0060763
@@ -2553,10 +2661,10 @@ after ,</li>
  1%            1              1
  5%            2              1
 10%            2              1       Obs                 245
-25%            2              1       Sum of Wgt.         245
+25%            2              1       Sum of wgt.         245
 
 50%            3                      Mean           2.995918
-                        Largest       Std. Dev.      .9343094
+                        Largest       Std. dev.      .9343094
 75%            4              4
 90%            4              4       Variance       .8729341
 95%            4              4       Skewness       -.324233
@@ -2568,10 +2676,10 @@ after ,</li>
  1%            1              1
  5%            1              1
 10%            2              1       Obs                 242
-25%            5              1       Sum of Wgt.         242
+25%            5              1       Sum of wgt.         242
 
 50%            6                      Mean           5.714876
-                        Largest       Std. Dev.      2.289545
+                        Largest       Std. dev.      2.289545
 75%            7              9
 90%            9              9       Variance       5.242018
 95%            9              9       Skewness      -.5538882
@@ -2583,10 +2691,10 @@ after ,</li>
  1%            1              1
  5%            1              1
 10%            1              1       Obs                 246
-25%            1              1       Sum of Wgt.         246
+25%            1              1       Sum of wgt.         246
 
 50%            2                      Mean           2.020325
-                        Largest       Std. Dev.      1.371575
+                        Largest       Std. dev.      1.371575
 75%            3              6
 90%            3              6       Variance       1.881218
 95%            6              6       Skewness       1.627742
@@ -2598,10 +2706,10 @@ after ,</li>
  1%            1              1
  5%            1              1
 10%            1              1       Obs                 246
-25%            3              1       Sum of Wgt.         246
+25%            3              1       Sum of wgt.         246
 
 50%            4                      Mean           3.162602
-                        Largest       Std. Dev.      1.071897
+                        Largest       Std. dev.      1.071897
 75%            4              4
 90%            4              4       Variance       1.148963
 95%            4              4       Skewness      -1.024083
@@ -2632,7 +2740,22 @@ ren v07 divorced
 sum 
 
 #NB change values in profile.do</code></pre>
-<pre><code>Unknown #command</code></pre>
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+      Gender |        246    1.382114    .4868948          1          2
+         Age |        246    39.15854    12.56831         16         76
+   Education |        245    2.995918    .9343094          1          4
+      Income |        242    5.714876    2.289545          1          9
+    Location |        246    2.020325    1.371575          1          6
+-------------+---------------------------------------------------------
+marital_st~s |        246    3.162602    1.071897          1          4
+    divorced |          0
+
+Unknown #command</code></pre>
 </div>
 <div id="recoding-variables" class="section level3">
 <h3>Recoding Variables</h3>
@@ -2646,19 +2769,26 @@ generate(newvar)]</em></li>
 <em>Midtsand</em></li>
 </ol>
 <pre class="stata"><code>codebook Location
+</code></pre>
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
 
-#NB: change values in profile.do</code></pre>
-<pre><code>variable Location not found
+&gt; ile.do ...
+
+
+variable Location not found
 r(111);
 
-end of do-file
 r(111);</code></pre>
 <pre class="stata"><code>recode Location (6=5)
 codebook Location</code></pre>
-<pre><code>variable Location not found
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+variable Location not found
 r(111);
 
-end of do-file
 r(111);</code></pre>
 <ol style="list-style-type: decimal">
 <li>Notice that the syntax for recode allows for multiple rules:</li>
@@ -2676,10 +2806,14 @@ variable, instead of overwriting the exisitng one</li>
 recode Location (1/3 = 1) (4/5 = 2), generate(recode_2)
 
 codebook recode_1 recode_2</code></pre>
-<pre><code>variable Location not found
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+variable Location not found
 r(111);
 
-end of do-file
 r(111);</code></pre>
 </div>
 <div id="generating-new-variables" class="section level3">
@@ -2699,10 +2833,14 @@ g product_age_education = Age * Education
 
 sum sum_age_education product_age_education
 </code></pre>
-<pre><code>Age not found
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+Age not found
 r(111);
 
-end of do-file
 r(111);</code></pre>
 <ol style="list-style-type: decimal">
 <li>The replace command can be thought of a more dynamic version of the
@@ -2734,10 +2872,14 @@ replace men = 0 if Gender == 1
 
 codebook women men
 </code></pre>
-<pre><code>Gender not found
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+Gender not found
 r(111);
 
-end of do-file
 r(111);</code></pre>
 <p>NB: Alternatively, we could also use the recode command with the
 generate option.</p>
@@ -2748,10 +2890,14 @@ recode Gender (1 = 1) (2 = 0), generate(women)
 recode Gender (2 = 1) (1 = 0), generate(men)
 
 codebook women men</code></pre>
-<pre><code>variable Gender not found
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+variable Gender not found
 r(111);
 
-end of do-file
 r(111);</code></pre>
 <ol style="list-style-type: decimal">
 <li><p>To label variables we can use the label command</p></li>
@@ -2844,10 +2990,14 @@ label values men men_label
 
 codebook women men 
 </code></pre>
-<pre><code>variable Gender not found
+<pre><code>Running /home/kjell/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA/prof
+
+&gt; ile.do ...
+
+
+variable Gender not found
 r(111);
 
-end of do-file
 r(111);</code></pre>
 </div>
 <div id="exercises-using-commands-not-gui" class="section level3">

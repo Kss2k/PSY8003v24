@@ -8,9 +8,11 @@ output:
 # Section 1: Simple Regression
 
 ### Libraries
+```{r include=FALSE}
+library(Statamarkdown) # This is only necessary for me
+```
 
 ```{r}
-library(Statamarkdown) # This is only necessary for me
 library(ggplot2) # Necessary for plotting data
 library(dplyr)
 library(pprint)
@@ -26,9 +28,6 @@ library(pprint)
 4.  This can also be accessed directly by loading the astatur package and calling the object "flats"
 
 ```{r}
-# Changing working directory 
-setwd("C:/Users/slupp/OneDrive/Skrivebord/NTNU/Mehmet/PSY8003/Simple_and_multiple_regression") 
-
 # Reading the dataframe and storing it in an object named df
 df <- readRDS("flats.rds") 
 
@@ -42,7 +41,7 @@ View(df)
 
 ```{stata}
 // setting working directory
-cd C:\Users\slupp\OneDrive\Skrivebord\NTNU\Mehmet\PSY8003\Simple_and_multiple_regression
+cd "~/Dropbox/PSY8003_v24/Lab-sessions/Simple_and_multiple_regression/"
 
 // Loading the dataset 
 use flats.dta
@@ -60,7 +59,8 @@ browse
 summary(df)
 str(df)
 
-# If you have installed the pprint package 
+# I you have installed pprint 
+# devtools::install_github("kss2k/pprint")
 psummary(df)
 
 ```
@@ -108,24 +108,6 @@ reg_price_size <- lm(formula = flat_price ~ floor_size,
 
 # Using positional arguments 
 reg_price_size <- lm(flat_price ~ floor_size, df)
-
-# A little tip: 
-  # When calling the functions this way R cannot autocomplete for you
-  # But if we use the pipe operator from the margarittr/dplyr package 
-  # We can get our variable_names autocompleted
-  # Note that some packages assume that you're using positional arguments
-  # E.g., margins
-
-reg_price_size <- df %>% lm(data =, #%>% pipes to the first argument
-                            formula = flat_price ~ floor_size)
-# Another alternative is to attach the dataframe-object to R's search path first
-# In general this is not recommended if your're working with more than one dataset at a time
-
-attach(df)
-
-reg_price_size <- lm(flat_price ~ floor_size) # We no longer need to specify data
-
-detach(df) # I do not want it to be attached going forward
 
 ```
 

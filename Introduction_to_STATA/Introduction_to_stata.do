@@ -27,7 +27,7 @@
 // In general I recommend that you always set a working directory usng the cd command:
 
 
-cd "C:\Users\slupp\OneDrive\Skrivebord\NTNU\Mehmet\PSY8003\Introduksjon\STATA"
+cd "~/Dropbox/PSY8003_v24/Lab-sessions/Introduction_to_STATA"
 
 
 // If we use the dir command, we can see the files in our directory
