@@ -17,7 +17,7 @@ dist2  <- simulat_dice_clt(n=2, rep=s)
 dist3  <- simulat_dice_clt(n=3, rep=s)
 dist10 <- simulat_dice_clt(n=10, rep=s)
 dist   <- data.frame(x = c(dist1, dist2, dist3, dist10),
-                     n = rep(1:4, each=s))
+                     n = rep(c(1, 2, 3, 10), each=s))
 
 ggplot(dist, aes(x=x, colour=n, )) +
   geom_histogram() +
