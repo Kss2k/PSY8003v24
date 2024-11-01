@@ -1,18 +1,18 @@
 ---
 title: "Introduction to R"
-output: 
+output:
   rmdformats::downcute:
     downcute_theme: "chaos"
 ---
 
-# Section 1: The R-language
+# How does R work? 
 
 # Objects and Functions
 
-1. Almost every expression in R can be conceptualized in terms of creating- or using functions, objects or both.
-2. Technically, functions are objects, but conceptually it is often easier to think of them as separate types of entities.
-3. In general, objects are static pieces of information, which often are associated with a name.
-4. E.g,. `iris` refers to a `data.frame` (dataset), and is included with `R`'s `base` package.
+1.  Almost every expression in R can be conceptualized in terms of creating- or using functions, objects or both.
+2.  Technically, functions are objects, but conceptually it is often easier to think of them as separate types of entities.
+3.  In general, objects are static pieces of information, which often are associated with a name.
+4.  E.g,. `iris` refers to a `data.frame` (data set), and is included with `R`'s `base` package.
 
 ```{r}
 iris
@@ -21,8 +21,8 @@ iris
 1.  Functions are expressions which takes a set of inputs, and returns an output
 2.  Functions can be used to create new objects.
 3.  Functions can be identified by the parentheses following the function name.
-4.  The parantheses contain the arguments (i.e,. input) of the function.
-4.  We'll look closer at functions later on, but here is an example using the `head()` function, to show the first 5 rows of the `iris` dataset.
+4.  The parentheses contain the arguments (i.e,. input) of the function.
+5.  We'll look closer at functions later on, but here is an example using the `head()` function, to show the first 5 rows of the `iris` dataset.
 
 ```{r}
 head(iris) # we can see that `head` is a function, since it is followed by parentheses
@@ -35,8 +35,9 @@ head(iris) # we can see that `head` is a function, since it is followed by paren
 2.  On a general level we can distinguish between different types of containers and different types of information
 3.  Objects are named in R (usually) using the `<-` (and `->`) operator
 4.  For most `R` users the most common object is the `data.frame` and `vector` object.
-   - A `data.frame` is basically a table with rows and columns
-   - A `vector` is a list of values, corresponding to a single column in a `data.frame`
+
+-   A `data.frame` is basically a table with rows and columns
+-   A `vector` is a list of values, corresponding to a single column in a `data.frame`
 
 ### Example (`vector`):
 
@@ -49,25 +50,29 @@ variable_1
 ```
 
 ### Example (`dataframe`):
+
 ```{r}
 iris
 mtcars
 ```
 
 ### Example (functions):
+
 ```{r}
 head(iris)
 ```
 
-
 # `vectors` (variables) and `data.frames` (datasets)
+
 ## `vectors`
-1. The most important data type (container) in R, is the vector. 
-2. In essence, everything in R is a vector. 
-3. A vector is simply a container of different values of a particular type of data (type of information). 
-4. For example, datasets consist of multiple columns, where each column is a vector
+
+1.  The most important data type (container) in R, is the vector.
+2.  In essence, everything in R is a vector.
+3.  A vector is simply a container of different values of a particular type of data (type of information).
+4.  For example, datasets consist of multiple columns, where each column is a vector
 
 ### Numeric (ratio/scale, depends on use)
+
 1.  Real numbers (i.e., numbers with decimals), correspond to the datatype (type of information) `double` (short for `double floating point number`)
 
 ```{r}
@@ -81,11 +86,13 @@ numeric_vector
 
 ```
 
-2. This is a vector of lenght 1, meaning that it is just a single number. 
-3. To combine multiple vectors into a single (longer) vector, we can use the `c()` function.
-  - `NOTE` the `c` stands for concatenate.
+2.  This is a vector of lenght 1, meaning that it is just a single number.
+3.  To combine multiple vectors into a single (longer) vector, we can use the `c()` function.
+
+-   `NOTE` the `c` stands for concatenate.
 
 numeric
+
 ```{r}
 # here we combine 4 vectors (of length 1) into a single vector. 
 numeric_vector <- c(1, 2, 3, 4)
@@ -94,7 +101,6 @@ numeric_vector <- c(1, 2, 3, 4)
 numeric_vector <- c(1, c(2, 3, 4))
 
 ```
-
 
 ### Integer (ratio/scale/ordinal, depends on use)
 
@@ -108,7 +114,7 @@ integer_vector
 ### Strings (nominal)
 
 1.  Characterpatterns stored in " "
-2.  This is usually called a string, but in R its technically called a character vector. 
+2.  This is usually called a string, but in R its technically called a character vector.
 
 ```{r}
 string_vector <- "John1_-"
@@ -152,17 +158,17 @@ ordered_factor_vector
 1.  TRUE versus FALSE
 
 ```{r}
-logical_vector <- F
+logical_vector <- FALSE
 logical_vector
 ```
 
-## Subsetting Vectors 
-1. Subsetting refers to the process of accessing information in a datatype. 
-2. To access information in vectors we can use [[]] and [].
-3. In practice both [] and [[]] do the same thing, where [] can access multiple 
-   values at the same time, whilst [[]] only access a single value.
-4. Inside of [] and [[]] we use different types of vectors to select information. 
-5. [] takes any length of vector, whilst [[]] only takes a vector of length 1.
+## Subsetting Vectors
+
+1.  Subsetting refers to the process of accessing information in a datatype.
+2.  To access information in vectors we can use [[]] and [].
+3.  In practice both [] and [[]] do the same thing, where [] can access multiple values at the same time, whilst [[]] only access a single value.
+4.  Inside of [] and [[]] we use different types of vectors to select information.
+5.  [] takes any length of vector, whilst [[]] only takes a vector of length 1.
 
 ```{r}
 integer_vector <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
@@ -192,10 +198,10 @@ integer_vector[c(FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)]
 
 ### Vectorized expressions
 
-1. One of the most powerful features in `R` is vectorized expressions. In general, when you apply an expression to a vector, the expression to the vector is applied to the vector as a whole. 
-2. In many programming langues expressions have to be applied to each element explicitly. In `R` most expressions work the same for a single value (i.e., just a one-length vector) as they would for a vector with a `1000` values. 
-3. This is actually why vectors are called vectors. 
-4. In essence, (numeric) vectors can be conceptualized as multidimensional numbers, where normal arithmetic is just vector arithmetic for vectors with one dimenstion (1 element).
+1.  One of the most powerful features in `R` is vectorized expressions. In general, when you apply an expression to a vector, the expression to the vector is applied to the vector as a whole.
+2.  In many programming langues expressions have to be applied to each element explicitly. In `R` most expressions work the same for a single value (i.e., just a one-length vector) as they would for a vector with a `1000` values.
+3.  This is actually why vectors are called vectors.
+4.  In essence, (numeric) vectors can be conceptualized as multidimensional numbers, where normal arithmetic is just vector arithmetic for vectors with one dimenstion (1 element).
 
 ```{r}
 1 + 1                   
@@ -210,13 +216,11 @@ c(1, 2, 3) * c(4, 5, 6)
 #> c(1 * 4, 2 * 5, 3 * 6)
 ```
 
-
 ## Dataframes
 
-1. After vectors, dataframes are (probably) the data type you will encounter most often
-2. Dataframes are essentially just a collection of vectors (stored in columns) with an 
-   equal number of rows.
-3. There are multiple ways of accessing data in dataframes. 
+1.  After vectors, dataframes are (probably) the data type you will encounter most often
+2.  Dataframes are essentially just a collection of vectors (stored in columns) with an equal number of rows.
+3.  There are multiple ways of accessing data in dataframes.
 
 ```{r}
 df <- read.csv("ChickWeight.csv") # Here we use the read.csv function to read a csv-file and store it as a named object
@@ -239,8 +243,7 @@ df[[1]]
 
 ```
 
-4. There are also more complicated ways of subsetting data for dataframes, 
-   using logical vectors, and a different notation (matrix-notation). 
+4.  There are also more complicated ways of subsetting data for dataframes, using logical vectors, and a different notation (matrix-notation).
 
 # Functions
 
@@ -251,8 +254,8 @@ df[[1]]
 5.  Arguments are simply pieces of information fed into the function, and can therefore be supplied using objects
 6.  Further, outputs from functions can be stored into objects
 
-
 ### Syntax of functions
+
 ```{r, eval = FALSE}
 function_name(input_1, input_2, ..., input_n) # This is the syntax of a function 
 
@@ -267,7 +270,7 @@ output <- function_name(input_1, input_2, ..., input_n)
 Using named arguments
 
 ```{r}
-weight <- df$weight
+weight <- iris$Sepal.Length
 
 mean(x = df$weight, trim = 0, na.rm = TRUE) 
 mean(na.rm = TRUE, x = df$weight, trim = 0)
@@ -316,10 +319,8 @@ help(mean) #this also works
 
 1.  To access files, and save files it is common to do so within a specified working directory.
 2.  This avoids the use of long path-strings to open a file e.g., (or using the GUI)
-3.  Depending on your operating system, version of R-studio, what type of file 
- you are using, etc, you might need to change your working directory to the 
- folder for this session. 
-4. You can set your working directory once using the GUI or using setwd()
+3.  Depending on your operating system, version of R-studio, what type of file you are using, etc, you might need to change your working directory to the folder for this session.
+4.  You can set your working directory once using the GUI or using setwd()
 
 ```{r}
 
@@ -328,22 +329,18 @@ help(mean) #this also works
 
 ```
 
-
-
 ```{r}
 df <- read.csv("ChickWeight.csv")
 ```
 
 # Exercises
 
-1.  Set your working directory
-2.  Open the "ChickWeight.csv" file, and store it as "df"
-3.  View the dataset using the "View()" function tip: use help("View")
-4.  Find the mean of the weight variable
-5.  Find the sd of the weight variable (hint: help(sd))
-6.  Find out what the "table()" function does, and use it
-7.  Find out what the "summary()" function does, and use it
-8.  Find out what the "str()" function does, and use it
+1.  View the iris dataset using the "View()" function tip: use help("View")
+2.  Find the mean of the Sepal.Width variable
+3.  Find the sd of the Sepal.Width variable (hint: help(sd))
+4.  Find out what the "table()" function does, and use it
+5.  Find out what the "summary()" function does, and use it
+6.  Find out what the "str()" function does, and use it
 
 # Section 2: Datamanagement
 
@@ -634,10 +631,10 @@ string_vector
 
 ### The pipe operator `|>` (base) and `%>%` (margrittr)
 
-1. The pipe operator is used to feed arguments/objects into functions
-2. Since function outputs can be used as arguments you can often get very complicated lines of code
+1.  The pipe operator is used to feed arguments/objects into functions
+2.  Since function outputs can be used as arguments you can often get very complicated lines of code
 
-Example:Lets say we want the mean of all means in our dataset but only for those who have `diet == 1`
+<Example:Lets> say we want the mean of all means in our dataset but only for those who have `diet == 1`
 
 ```{r}
 mean(apply(subset(df, Diet == 1), 1, mean))
